@@ -4,7 +4,6 @@ import { useMemo, useEffect } from 'react';
 import { useSalesStore } from '@/lib/stores/sales.store';
 import { useCatalogStore } from '@/lib/stores/catalog.store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { format, subDays } from 'date-fns';
 
@@ -70,7 +69,7 @@ export default function OverviewPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Overview</h1>
-        <p className="text-gray-500">Dashboard and key metrics</p>
+        <p className="text-muted-foreground">Dashboard and key metrics</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -81,7 +80,7 @@ export default function OverviewPage() {
                 <span className="text-2xl">$</span>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Total Revenue</p>
+                <p className="text-sm text-muted-foreground">Total Revenue</p>
                 <p className="text-2xl font-bold">${totalRevenue.toFixed(2)}</p>
               </div>
             </div>
@@ -95,7 +94,7 @@ export default function OverviewPage() {
                 <span className="text-2xl">#</span>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Total Transactions</p>
+                <p className="text-sm text-muted-foreground">Total Transactions</p>
                 <p className="text-2xl font-bold">{totalTransactions}</p>
               </div>
             </div>
@@ -109,7 +108,7 @@ export default function OverviewPage() {
                 <span className="text-2xl">!</span>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Low Stock Items</p>
+                <p className="text-sm text-muted-foreground">Low Stock Items</p>
                 <p className="text-2xl font-bold">{lowStockProducts.length}</p>
               </div>
             </div>

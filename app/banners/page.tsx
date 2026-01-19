@@ -91,7 +91,7 @@ export default function BannersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Banners</h1>
-          <p className="text-gray-500">Manage front-end visual promotions</p>
+          <p className="text-muted-foreground">Manage front-end visual promotions</p>
         </div>
         <Dialog open={newBannerOpen} onOpenChange={setNewBannerOpen}>
           <DialogTrigger asChild>
@@ -207,7 +207,7 @@ export default function BannersPage() {
             <CardContent className="p-4 space-y-2">
               <h3 className="font-medium">{banner.headline}</h3>
               {banner.subtext && (
-                <p className="text-sm text-gray-500">{banner.subtext}</p>
+                <p className="text-sm text-muted-foreground">{banner.subtext}</p>
               )}
               <div className="flex items-center justify-between">
                 <Badge variant="outline">{banner.type}</Badge>

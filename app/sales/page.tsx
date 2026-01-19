@@ -16,8 +16,8 @@ export default function SalesPage() {
   const { transactions, pickups, loading, loadTransactions, loadPickups } = useSalesStore();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [filters, setFilters] = useState({
-    buyerType: '',
-    paymentMethod: '',
+    buyerType: 'all',
+    paymentMethod: 'all',
   });
 
   useEffect(() => {
@@ -26,8 +26,8 @@ export default function SalesPage() {
   }, [loadTransactions, loadPickups]);
 
   const filteredTransactions = transactions.filter(txn => {
-    if (filters.buyerType && txn.customerType !== filters.buyerType) return false;
-    if (filters.paymentMethod && txn.paymentMethod !== filters.paymentMethod) return false;
+    if (filters.buyerType !== 'all' && txn.customerType !== filters.buyerType) return false;
+    if (filters.paymentMethod !== 'all' && txn.paymentMethod !== filters.paymentMethod) return false;
     return true;
   });
 
@@ -35,7 +35,7 @@ export default function SalesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Sales</h1>
-        <p className="text-gray-500">View transactions and manage pickups</p>
+        <p className="text-muted-foreground">View transactions and manage pickups</p>
       </div>
 
       <Tabs defaultValue="transactions" className="space-y-4">
@@ -55,7 +55,7 @@ export default function SalesPage() {
                       <SelectValue placeholder="All Types" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Types</SelectItem>
+                      <SelectItem value="all">All Types</SelectItem>
                       <SelectItem value="member">Member</SelectItem>
                       <SelectItem value="guest">Guest</SelectItem>
                     </SelectContent>
@@ -65,7 +65,7 @@ export default function SalesPage() {
                       <SelectValue placeholder="All Methods" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Methods</SelectItem>
+                      <SelectItem value="all">All Methods</SelectItem>
                       <SelectItem value="Credit Card">Credit Card</SelectItem>
                       <SelectItem value="Debit Card">Debit Card</SelectItem>
                       <SelectItem value="Cash">Cash</SelectItem>
@@ -120,7 +120,7 @@ export default function SalesPage() {
             </CardHeader>
             <CardContent>
               {pickups.length === 0 ? (
-                <p className="text-center text-gray-500 py-8">No pickups found</p>
+                <p className="text-center text-muted-foreground py-8">No pickups found</p>
               ) : (
                 <Table>
                   <TableHeader>
@@ -167,40 +167,40 @@ export default function SalesPage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Transaction ID</p>
+                <p className="text-sm text-muted-foreground">Transaction ID</p>
                 <p className="font-medium">{selectedTransaction.id}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Date</p>
+                <p className="text-sm text-muted-foreground">Date</p>
                 <p className="font-medium">{format(selectedTransaction.date, 'MMM d, yyyy h:mm a')}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Customer</p>
+                <p className="text-sm text-muted-foreground">Customer</p>
                 <p className="font-medium">{selectedTransaction.customerName}</p>
                 <Badge variant="outline" className="mt-1">{selectedTransaction.customerType}</Badge>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Payment Method</p>
+                <p className="text-sm text-muted-foreground">Payment Method</p>
                 <p className="font-medium">{selectedTransaction.paymentMethod}</p>
               </div>
             </div>
 
             <div>
-              <p className="text-sm text-gray-500 mb-2">Items</p>
+              <p className="text-sm text-muted-foreground mb-2">Items</p>
               <div className="space-y-2">
                 {selectedTransaction.items.map((item, index) => (
                   <div key={index} className="flex justify-between p-2 border rounded">
                     <div>
                       <p className="font-medium">{item.productName}</p>
                       {item.variants && (
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-muted-foreground">
                           {Object.entries(item.variants).map(([k, v]) => `${k}: ${v}`).join(', ')}
                         </p>
                       )}
                     </div>
                     <div className="text-right">
                       <p className="font-medium">{item.quantity} × ${item.price.toFixed(2)}</p>
-                      <p className="text-sm text-gray-500">${(item.quantity * item.price).toFixed(2)}</p>
+                      <p className="text-sm text-muted-foreground">${(item.quantity * item.price).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}

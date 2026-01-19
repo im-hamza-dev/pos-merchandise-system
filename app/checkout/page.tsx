@@ -144,7 +144,7 @@ export default function CheckoutPage() {
                     <div className="flex-1 space-y-2">
                       <div>
                         <h3 className="font-medium">{product.name}</h3>
-                        <p className="text-sm text-gray-500">${product.price.toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground">${product.price.toFixed(2)}</p>
                       </div>
                       <div className="flex items-center justify-between">
                         {getStockBadge(product)}
@@ -172,10 +172,10 @@ export default function CheckoutPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {selectedCustomer ? (
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
+              <div className="flex items-center justify-between p-3 bg-muted rounded">
                 <div>
                   <p className="font-medium">{selectedCustomer.name}</p>
-                  <p className="text-sm text-gray-500">{selectedCustomer.email}</p>
+                  <p className="text-sm text-muted-foreground">{selectedCustomer.email}</p>
                   {selectedCustomer.isMember && (
                     <Badge variant="outline" className="mt-1">Member - 10% Discount</Badge>
                   )}
@@ -200,14 +200,14 @@ export default function CheckoutPage() {
                           setSelectedCustomer(customer);
                           setCustomerSearch('');
                         }}
-                        className="w-full text-left p-2 hover:bg-gray-50 rounded text-sm"
+                        className="w-full text-left p-2 hover:bg-muted rounded text-sm"
                       >
                         <p className="font-medium">{customer.name}</p>
-                        <p className="text-gray-500">{customer.email}</p>
+                        <p className="text-muted-foreground">{customer.email}</p>
                       </button>
                     ))}
                     {filteredCustomers.length === 0 && (
-                      <p className="text-sm text-gray-500 p-2">No customers found</p>
+                      <p className="text-sm text-muted-foreground p-2">No customers found</p>
                     )}
                   </div>
                 )}
@@ -227,11 +227,11 @@ export default function CheckoutPage() {
                   <div className="flex-1">
                     <p className="font-medium text-sm">{item.product.name}</p>
                     {item.selectedVariants && Object.keys(item.selectedVariants).length > 0 && (
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {Object.entries(item.selectedVariants).map(([k, v]) => `${k}: ${v}`).join(', ')}
                       </p>
                     )}
-                    <p className="text-sm text-gray-500">${item.price.toFixed(2)}</p>
+                    <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
                   </div>
                   <div className="flex items-center gap-1">
                     <Button
@@ -260,7 +260,7 @@ export default function CheckoutPage() {
                 </div>
               ))}
               {cart.length === 0 && (
-                <p className="text-center text-gray-500 py-8">Cart is empty</p>
+                <p className="text-center text-muted-foreground py-8">Cart is empty</p>
               )}
             </div>
 

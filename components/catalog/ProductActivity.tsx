@@ -40,17 +40,17 @@ export function ProductActivity({ product }: ProductActivityProps) {
     <div className="space-y-6 pt-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="border rounded p-4">
-          <p className="text-sm text-gray-500 mb-1">Total Sales</p>
+          <p className="text-sm text-muted-foreground mb-1">Total Sales</p>
           <p className="text-2xl font-bold">
             {relatedTransactions.reduce(
               (sum, txn) => sum + (txn.items.find(i => i.productId === product.id)?.quantity || 0),
               0
             )}
           </p>
-          <p className="text-sm text-gray-500">units sold</p>
+          <p className="text-sm text-muted-foreground">units sold</p>
         </div>
         <div className="border rounded p-4">
-          <p className="text-sm text-gray-500 mb-1">Revenue Generated</p>
+          <p className="text-sm text-muted-foreground mb-1">Revenue Generated</p>
           <p className="text-2xl font-bold">
             $
             {relatedTransactions
@@ -60,7 +60,7 @@ export function ProductActivity({ product }: ProductActivityProps) {
               }, 0)
               .toFixed(2)}
           </p>
-          <p className="text-sm text-gray-500">total revenue</p>
+          <p className="text-sm text-muted-foreground">total revenue</p>
         </div>
       </div>
 
@@ -77,19 +77,19 @@ export function ProductActivity({ product }: ProductActivityProps) {
                         {adjustment.change > 0 ? '+' : ''}
                         {adjustment.change} units
                       </p>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-muted-foreground">
                         {format(adjustment.date, 'MMM d, yyyy h:mm a')}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-500">{adjustment.reason}</p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-sm text-muted-foreground">{adjustment.reason}</p>
+                    <p className="text-xs text-muted-foreground/70 mt-1">
                       Stock: {adjustment.previousStock} → {adjustment.newStock}
                     </p>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-muted-foreground">
                 <p className="text-sm">No inventory adjustments recorded</p>
               </div>
             )}
@@ -112,18 +112,18 @@ export function ProductActivity({ product }: ProductActivityProps) {
                         <p className="font-medium">
                           {item.quantity} × ${item.price.toFixed(2)}
                         </p>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-muted-foreground">
                           {format(txn.date, 'MMM d, yyyy h:mm a')}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         {txn.customerName}
                         <Badge variant="outline" className="ml-2">
                           {txn.customerType}
                         </Badge>
                       </p>
                       {item.variants && (
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-muted-foreground/70 mt-1">
                           {Object.entries(item.variants)
                             .map(([k, v]) => `${k}: ${v}`)
                             .join(', ')}
@@ -137,7 +137,7 @@ export function ProductActivity({ product }: ProductActivityProps) {
                 );
               })
             ) : (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-muted-foreground">
                 <p className="text-sm">No transactions found for this product</p>
               </div>
             )}

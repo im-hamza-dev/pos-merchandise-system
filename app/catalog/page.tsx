@@ -45,7 +45,7 @@ export default function CatalogPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Catalog</h1>
-          <p className="text-gray-500">Manage products, inventory, and categories</p>
+          <p className="text-muted-foreground">Manage products, inventory, and categories</p>
         </div>
         <Button>
           New Product
@@ -91,7 +91,7 @@ export default function CatalogPage() {
                             />
                             <div>
                               <h3 className="font-medium">{product.name}</h3>
-                              <p className="text-sm text-gray-500">{getCategoryName(product.categoryId)}</p>
+                              <p className="text-sm text-muted-foreground">{getCategoryName(product.categoryId)}</p>
                             </div>
                             <div className="flex items-center justify-between">
                               <span className="font-bold">${product.price.toFixed(2)}</span>
@@ -104,7 +104,7 @@ export default function CatalogPage() {
                                 {product.promoLabel || 'Promoted'}
                               </Badge>
                             )}
-                            <div className="flex items-center justify-between text-sm text-gray-500">
+                            <div className="flex items-center justify-between text-sm text-muted-foreground">
                               <span>Stock: {product.stock}</span>
                               {product.status === 'hidden' && (
                                 <Badge variant="secondary">Hidden</Badge>
@@ -133,11 +133,11 @@ export default function CatalogPage() {
                             />
                             <div className="flex-1">
                               <h3 className="font-medium">{product.name}</h3>
-                              <p className="text-sm text-gray-500">{getCategoryName(product.categoryId)}</p>
+                              <p className="text-sm text-muted-foreground">{getCategoryName(product.categoryId)}</p>
                             </div>
                             <div className="text-right">
                               <p className="font-bold">${product.price.toFixed(2)}</p>
-                              <p className="text-sm text-gray-500">Stock: {product.stock}</p>
+                              <p className="text-sm text-muted-foreground">Stock: {product.stock}</p>
                             </div>
                             <div className="space-y-1">
                               <Badge variant={stockStatus.color as any}>

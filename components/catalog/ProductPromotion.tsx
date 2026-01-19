@@ -42,7 +42,7 @@ export function ProductPromotion({ product }: ProductPromotionProps) {
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <Label className="text-base">Promote this Product</Label>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Make this product eligible for banner promotions
             </p>
           </div>
@@ -63,7 +63,7 @@ export function ProductPromotion({ product }: ProductPromotionProps) {
                 onChange={(e) => setPriority(parseInt(e.target.value) || 0)}
                 placeholder="Higher numbers = higher priority"
               />
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Higher priority products appear first in banner selections
               </p>
             </div>
@@ -76,18 +76,18 @@ export function ProductPromotion({ product }: ProductPromotionProps) {
                 placeholder="e.g., New, Staff Pick, Popular"
                 maxLength={20}
               />
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 This label will appear on the product card (max 20 characters)
               </p>
             </div>
 
-            <div className="bg-gray-50 p-3 rounded">
+            <div className="bg-muted p-3 rounded">
               <p className="text-sm font-medium mb-2">Preview</p>
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="border-purple-500 text-purple-500">
                   {promoLabel || 'Promoted'}
                 </Badge>
-                <span className="text-sm text-gray-500">Priority: {priority}</span>
+                <span className="text-sm text-muted-foreground">Priority: {priority}</span>
               </div>
             </div>
           </div>

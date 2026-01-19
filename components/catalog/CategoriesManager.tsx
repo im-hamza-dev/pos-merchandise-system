@@ -100,14 +100,14 @@ export function CategoriesManager() {
               .map(category => (
                 <div
                   key={category.id}
-                  className="flex items-center gap-4 p-4 border rounded hover:border-gray-400 transition-colors"
+                  className="flex items-center gap-4 p-4 border rounded hover:border-primary/50 transition-colors"
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <h3 className="font-medium">{category.name}</h3>
                       {!category.visible && <Badge variant="secondary">Hidden</Badge>}
                     </div>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {getProductCount(category.id)} products
                     </p>
                   </div>
@@ -135,7 +135,7 @@ export function CategoriesManager() {
                         <div className="flex items-center justify-between">
                           <div>
                             <Label>Visible</Label>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                               Hidden categories and their products won't appear in checkout
                             </p>
                           </div>
@@ -166,14 +166,7 @@ export function CategoriesManager() {
         </CardContent>
       </Card>
 
-      <div className="bg-blue-50 border border-blue-200 rounded p-4">
-        <h3 className="font-medium text-blue-900 mb-2">Category Rules</h3>
-        <ul className="text-sm text-blue-800 space-y-1">
-          <li>• Every product must belong to exactly one category</li>
-          <li>• Hiding a category hides all products within it</li>
-          <li>• Display order determines how categories appear in filters</li>
-        </ul>
-      </div>
+     
     </div>
   );
 }

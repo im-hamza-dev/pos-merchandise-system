@@ -16,18 +16,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-50">
-        <header className="bg-white border-b sticky top-0 z-50">
+      <body className="min-h-screen bg-background">
+        <header className="bg-card border-b sticky top-0 z-50">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h1 className="text-2xl font-bold">POS & Merchandise</h1>
-                <p className="text-sm text-gray-500">Admin Platform</p>
+                <p className="text-sm text-muted-foreground">Admin Platform</p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <p className="text-sm font-medium">Staff Portal</p>
-                  <p className="text-xs text-gray-500">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                  <p className="text-xs text-muted-foreground">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                 </div>
               </div>
             </div>

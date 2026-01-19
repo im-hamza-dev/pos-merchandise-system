@@ -86,7 +86,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Settings & Reports</h1>
-        <p className="text-gray-500">Analytics and system configuration</p>
+        <p className="text-muted-foreground">Analytics and system configuration</p>
       </div>
 
       <Tabs defaultValue="settings" className="space-y-4">

@@ -54,13 +54,13 @@ export function ProductInventory({ product }: ProductInventoryProps) {
     <div className="space-y-6 pt-4">
       <div className="grid grid-cols-3 gap-4">
         <div className="border rounded p-4 space-y-2">
-          <p className="text-sm text-gray-500">Current Stock</p>
+          <p className="text-sm text-muted-foreground">Current Stock</p>
           <p className="text-3xl font-bold">{product.stock}</p>
           <Badge variant={stockStatus.color as any}>{stockStatus.label}</Badge>
         </div>
 
         <div className="border rounded p-4 space-y-2">
-          <p className="text-sm text-gray-500">Reorder Threshold</p>
+          <p className="text-sm text-muted-foreground">Reorder Threshold</p>
           <p className="text-3xl font-bold">{product.reorderThreshold || '-'}</p>
           {product.reorderThreshold && product.stock <= product.reorderThreshold && (
             <Badge variant="outline" className="border-orange-500 text-orange-500">
@@ -70,7 +70,7 @@ export function ProductInventory({ product }: ProductInventoryProps) {
         </div>
 
         <div className="border rounded p-4 space-y-2">
-          <p className="text-sm text-gray-500">Status</p>
+          <p className="text-sm text-muted-foreground">Status</p>
           <p className="text-3xl font-bold">{product.status === 'active' ? '✓' : product.status === 'hidden' ? '⊘' : '✕'}</p>
           <Badge variant="secondary">{product.status}</Badge>
         </div>
@@ -91,7 +91,7 @@ export function ProductInventory({ product }: ProductInventoryProps) {
               Save
             </Button>
           </div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Alert will trigger when stock falls to or below this level
           </p>
         </div>
@@ -153,7 +153,7 @@ export function ProductInventory({ product }: ProductInventoryProps) {
                   </Select>
                 </div>
 
-                <div className="bg-gray-50 p-3 rounded">
+                <div className="bg-muted p-3 rounded">
                   <p className="text-sm">
                     <span className="font-medium">Current Stock:</span> {product.stock}
                   </p>
@@ -173,7 +173,7 @@ export function ProductInventory({ product }: ProductInventoryProps) {
           </Dialog>
         </div>
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           Adjustments require a reason and will be logged in the activity tab
         </p>
       </div>
