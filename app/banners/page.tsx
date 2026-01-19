@@ -46,6 +46,14 @@ export default function BannersPage() {
       await updateBanner(editingBanner.id, formData);
       toast.success('Banner updated');
       setEditingBanner(null);
+      setFormData({
+        type: 'static',
+        headline: '',
+        subtext: '',
+        image: '',
+        active: false,
+        priority: 0,
+      });
     } else {
       await createBanner({
         type: formData.type || 'static',
@@ -97,7 +105,7 @@ export default function BannersPage() {
           <DialogTrigger asChild>
             <Button>New Banner</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create New Banner</DialogTitle>
             </DialogHeader>
@@ -190,6 +198,117 @@ export default function BannersPage() {
           </DialogContent>
         </Dialog>
       </div>
+
+      <Dialog open={!!editingBanner} onOpenChange={(open) => {
+        if (!open) {
+          setEditingBanner(null);
+          setFormData({
+            type: 'static',
+            headline: '',
+            subtext: '',
+            image: '',
+            active: false,
+            priority: 0,
+          });
+        }
+      }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Banner</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Banner Type *</Label>
+              <Select value={formData.type} onValueChange={(value: any) => setFormData({ ...formData, type: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="static">Static Banner</SelectItem>
+                  <SelectItem value="product">Product-Based Banner</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Banner Image URL *</Label>
+              <Input
+                value={formData.image}
+                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                placeholder="https://..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Headline *</Label>
+              <Input
+                value={formData.headline}
+                onChange={(e) => setFormData({ ...formData, headline: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Subtext</Label>
+              <Textarea
+                value={formData.subtext}
+                onChange={(e) => setFormData({ ...formData, subtext: e.target.value })}
+                rows={2}
+              />
+            </div>
+
+            {formData.type === 'product' && (
+              <div className="space-y-2">
+                <Label>Select Promoted Products</Label>
+                <div className="max-h-[200px] overflow-y-auto border rounded p-2 space-y-2">
+                  {promotedProducts.map(product => (
+                    <div key={product.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        checked={formData.productIds?.includes(product.id)}
+                        onCheckedChange={(checked) => {
+                          const currentIds = formData.productIds || [];
+                          setFormData({
+                            ...formData,
+                            productIds: checked
+                              ? [...currentIds, product.id]
+                              : currentIds.filter(id => id !== product.id),
+                          });
+                        }}
+                      />
+                      <Label className="font-normal">{product.name}</Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label>CTA Link (Optional)</Label>
+              <Input
+                value={formData.ctaLink}
+                onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })}
+                placeholder="https://..."
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Label>Active</Label>
+              <Switch
+                checked={formData.active}
+                onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <Button className="flex-1" onClick={handleSaveBanner}>
+                Save Changes
+              </Button>
+              <Button variant="outline" onClick={() => setEditingBanner(null)}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {banners.map(banner => (

@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useCheckoutStore } from '@/lib/stores/checkout.store';
 import { useCatalogStore } from '@/lib/stores/catalog.store';
+import { useBannersStore } from '@/lib/stores/banners.store';
 import { Product, Customer } from '@/lib/types';
 import { checkoutService } from '@/lib/api/services/checkout.service';
 import { Input } from '@/components/ui/input';
@@ -12,11 +13,13 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { toast } from 'sonner';
 
 export default function CheckoutPage() {
   const { cart, selectedCustomer, paymentMethod, addToCart, removeFromCart, updateCartQuantity, setSelectedCustomer, setPaymentMethod, processPayment } = useCheckoutStore();
   const { products, categories, loadProducts, loadCategories } = useCatalogStore();
+  const { banners, loadBanners } = useBannersStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [customerSearch, setCustomerSearch] = useState('');
@@ -28,7 +31,8 @@ export default function CheckoutPage() {
   useEffect(() => {
     loadProducts();
     loadCategories();
-  }, [loadProducts, loadCategories]);
+    loadBanners();
+  }, [loadProducts, loadCategories, loadBanners]);
 
   useEffect(() => {
     const searchCustomers = async () => {
@@ -49,6 +53,18 @@ export default function CheckoutPage() {
       return matchesSearch && matchesCategory;
     });
   }, [products, searchTerm, selectedCategory]);
+
+  const activeBanners = useMemo(() => {
+    const now = new Date();
+    return banners
+      .filter(banner => banner.active)
+      .filter(banner => {
+        if (banner.startDate && now < banner.startDate) return false;
+        if (banner.endDate && now > banner.endDate) return false;
+        return true;
+      })
+      .sort((a, b) => (b.priority || 0) - (a.priority || 0));
+  }, [banners]);
 
   const cartSubtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const discount = selectedCustomer?.isMember ? cartSubtotal * 0.1 : 0;
@@ -101,7 +117,52 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+    <div className="space-y-6">
+      {activeBanners.length > 0 && (
+        <Card>
+          <CardContent className="p-0">
+            <Carousel className="w-full">
+              <CarouselContent>
+                {activeBanners.map((banner) => (
+                  <CarouselItem key={banner.id}>
+                    <div className="relative w-full h-48 md:h-64 rounded-lg overflow-hidden">
+                      <img
+                        src={banner.image}
+                        alt={banner.headline}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center">
+                        <div className="p-6 text-white">
+                          <h3 className="text-2xl md:text-3xl font-bold mb-2">{banner.headline}</h3>
+                          {banner.subtext && (
+                            <p className="text-lg md:text-xl mb-4">{banner.subtext}</p>
+                          )}
+                          {banner.ctaLink && (
+                            <Button
+                              variant="secondary"
+                              onClick={() => window.open(banner.ctaLink, '_blank')}
+                            >
+                              Learn More
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {activeBanners.length > 1 && (
+                <>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </>
+              )}
+            </Carousel>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
       <div className="lg:col-span-2 space-y-4">
         <Card>
           <CardHeader>
@@ -309,6 +370,7 @@ export default function CheckoutPage() {
             )}
           </CardContent>
         </Card>
+      </div>
       </div>
 
       <Dialog open={!!variantDialogProduct} onOpenChange={(open) => !open && setVariantDialogProduct(null)}>

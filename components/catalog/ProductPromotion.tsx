@@ -31,12 +31,7 @@ export function ProductPromotion({ product }: ProductPromotionProps) {
 
   return (
     <div className="space-y-6 pt-4">
-      <div className="bg-blue-50 border border-blue-200 rounded p-4">
-        <p className="text-sm text-blue-800">
-          Promotion affects <strong>visibility only</strong>. It does not change price or inventory.
-          Promoted products become selectable in the Banners section.
-        </p>
-      </div>
+      
 
       <div className="space-y-4 border rounded p-4">
         <div className="flex items-center justify-between">

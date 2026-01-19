@@ -344,9 +344,10 @@ export const mockBanners: Banner[] = [
     headline: 'New Arrivals - Premium Apparel',
     subtext: 'Check out our latest club merchandise',
     productIds: ['prod-1', 'prod-9'],
-    active: true,
+    active: false,
     priority: 1,
   },
+ 
   {
     id: 'banner-2',
     type: 'static',
@@ -354,9 +355,7 @@ export const mockBanners: Banner[] = [
     headline: 'Member Appreciation Sale',
     subtext: 'Extra 10% off all merchandise this week',
     ctaLink: '#',
-    active: false,
-    startDate: new Date('2026-01-20'),
-    endDate: new Date('2026-01-27'),
+    active: true,
     priority: 2,
   },
 ];

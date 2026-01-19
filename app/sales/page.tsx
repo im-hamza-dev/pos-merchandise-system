@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -89,7 +90,7 @@ export default function SalesPage() {
                 </TableHeader>
                 <TableBody>
                   {filteredTransactions.map(txn => (
-                    <TableRow key={txn.id} className="cursor-pointer" onClick={() => setSelectedTransaction(txn)}>
+                    <TableRow key={txn.id}>
                       <TableCell>{format(txn.date, 'MMM d, yyyy h:mm a')}</TableCell>
                       <TableCell>
                         <div>
@@ -103,7 +104,16 @@ export default function SalesPage() {
                       <TableCell className="font-bold">${txn.total.toFixed(2)}</TableCell>
                       <TableCell>{txn.paymentMethod}</TableCell>
                       <TableCell>
-                        <Button variant="ghost" size="sm">View</Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedTransaction(txn);
+                          }}
+                        >
+                          View
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -156,80 +166,81 @@ export default function SalesPage() {
         </TabsContent>
       </Tabs>
 
-      {selectedTransaction && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Transaction Details</CardTitle>
-              <Button variant="outline" onClick={() => setSelectedTransaction(null)}>Close</Button>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Transaction ID</p>
-                <p className="font-medium">{selectedTransaction.id}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Date</p>
-                <p className="font-medium">{format(selectedTransaction.date, 'MMM d, yyyy h:mm a')}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Customer</p>
-                <p className="font-medium">{selectedTransaction.customerName}</p>
-                <Badge variant="outline" className="mt-1">{selectedTransaction.customerType}</Badge>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Payment Method</p>
-                <p className="font-medium">{selectedTransaction.paymentMethod}</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-sm text-muted-foreground mb-2">Items</p>
-              <div className="space-y-2">
-                {selectedTransaction.items.map((item, index) => (
-                  <div key={index} className="flex justify-between p-2 border rounded">
-                    <div>
-                      <p className="font-medium">{item.productName}</p>
-                      {item.variants && (
-                        <p className="text-sm text-muted-foreground">
-                          {Object.entries(item.variants).map(([k, v]) => `${k}: ${v}`).join(', ')}
-                        </p>
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium">{item.quantity} × ${item.price.toFixed(2)}</p>
-                      <p className="text-sm text-muted-foreground">${(item.quantity * item.price).toFixed(2)}</p>
-                    </div>
+      <Dialog open={!!selectedTransaction} onOpenChange={(open) => !open && setSelectedTransaction(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          {selectedTransaction && (
+            <>
+              <DialogHeader>
+                <DialogTitle>Transaction Details</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Transaction ID</p>
+                    <p className="font-medium">{selectedTransaction.id}</p>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="border-t pt-4 space-y-2">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>${selectedTransaction.subtotal.toFixed(2)}</span>
-              </div>
-              {selectedTransaction.discount > 0 && (
-                <div className="flex justify-between text-green-600">
-                  <span>Discount</span>
-                  <span>-${selectedTransaction.discount.toFixed(2)}</span>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Date</p>
+                    <p className="font-medium">{format(selectedTransaction.date, 'MMM d, yyyy h:mm a')}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Customer</p>
+                    <p className="font-medium">{selectedTransaction.customerName}</p>
+                    <Badge variant="outline" className="mt-1">{selectedTransaction.customerType}</Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Payment Method</p>
+                    <p className="font-medium">{selectedTransaction.paymentMethod}</p>
+                  </div>
                 </div>
-              )}
-              <div className="flex justify-between">
-                <span>Tax</span>
-                <span>${selectedTransaction.tax.toFixed(2)}</span>
+
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">Items</p>
+                  <div className="space-y-2">
+                    {selectedTransaction.items.map((item, index) => (
+                      <div key={index} className="flex justify-between p-2 border rounded">
+                        <div>
+                          <p className="font-medium">{item.productName}</p>
+                          {item.variants && (
+                            <p className="text-sm text-muted-foreground">
+                              {Object.entries(item.variants).map(([k, v]) => `${k}: ${v}`).join(', ')}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium">{item.quantity} × ${item.price.toFixed(2)}</p>
+                          <p className="text-sm text-muted-foreground">${(item.quantity * item.price).toFixed(2)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border-t pt-4 space-y-2">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>${selectedTransaction.subtotal.toFixed(2)}</span>
+                  </div>
+                  {selectedTransaction.discount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Discount</span>
+                      <span>-${selectedTransaction.discount.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span>Tax</span>
+                    <span>${selectedTransaction.tax.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between font-bold text-lg border-t pt-2">
+                    <span>Total</span>
+                    <span>${selectedTransaction.total.toFixed(2)}</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between font-bold text-lg border-t pt-2">
-                <span>Total</span>
-                <span>${selectedTransaction.total.toFixed(2)}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
