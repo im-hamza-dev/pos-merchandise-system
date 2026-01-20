@@ -22,7 +22,7 @@ const ROLE_CARDS: RoleCard[] = [
   {
     role: 'manager',
     title: 'Manager',
-    description: 'Full access including Catalog edits, Banners, Settings, and privileged actions.',
+    description: 'Full access including Catalog edits, Banners, Settings ',
   },
   {
     role: 'owner',
@@ -51,9 +51,6 @@ export default function LoginPage() {
       <div className="w-full max-w-3xl space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold">Select Role</h1>
-          <p className="text-muted-foreground">
-            Choose a role to simulate access permissions in the admin portal.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

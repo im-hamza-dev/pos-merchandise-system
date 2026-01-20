@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useCheckoutStore } from '@/lib/stores/checkout.store';
 import { useCatalogStore } from '@/lib/stores/catalog.store';
 import { useBannersStore } from '@/lib/stores/banners.store';
+import { useSettingsStore } from '@/lib/stores/settings.store';
 import { Product, Customer } from '@/lib/types';
 import { checkoutService } from '@/lib/api/services/checkout.service';
 import { Input } from '@/components/ui/input';
@@ -21,6 +22,7 @@ export default function CheckoutPage() {
   const { cart, selectedCustomer, paymentMethod, addToCart, removeFromCart, updateCartQuantity, setSelectedCustomer, setPaymentMethod, processPayment } = useCheckoutStore();
   const { products, categories, loadProducts, loadCategories } = useCatalogStore();
   const { banners, loadBanners } = useBannersStore();
+  const { settings, loadSettings } = useSettingsStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [customerSearch, setCustomerSearch] = useState('');
@@ -33,7 +35,8 @@ export default function CheckoutPage() {
     loadProducts();
     loadCategories();
     loadBanners();
-  }, [loadProducts, loadCategories, loadBanners]);
+    loadSettings();
+  }, [loadProducts, loadCategories, loadBanners, loadSettings]);
 
   useEffect(() => {
     const searchCustomers = async () => {
@@ -68,8 +71,10 @@ export default function CheckoutPage() {
   }, [banners]);
 
   const cartSubtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const discount = selectedCustomer?.isMember ? cartSubtotal * 0.1 : 0;
-  const tax = (cartSubtotal - discount) * 0.08;
+  const taxRate = settings?.taxRate ?? 0.08;
+  const memberDiscountPercent = settings?.memberDiscountPercent ?? 10;
+  const discount = selectedCustomer?.isMember ? cartSubtotal * (memberDiscountPercent / 100) : 0;
+  const tax = (cartSubtotal - discount) * taxRate;
   const total = cartSubtotal - discount + tax;
 
   const getStockBadge = (product: Product) => {
@@ -240,7 +245,7 @@ export default function CheckoutPage() {
                   <p className="font-medium">{selectedCustomer.name}</p>
                   <p className="text-sm text-muted-foreground">{selectedCustomer.email}</p>
                   {selectedCustomer.isMember && (
-                    <Badge variant="outline" className="mt-1">Member - 10% Discount</Badge>
+                    <Badge variant="outline" className="mt-1">Member - {memberDiscountPercent}% Discount</Badge>
                   )}
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => setSelectedCustomer(null)}>
@@ -336,12 +341,12 @@ export default function CheckoutPage() {
                   </div>
                   {discount > 0 && (
                     <div className="flex justify-between text-sm text-green-600">
-                      <span>Member Discount (10%)</span>
+                      <span>Member Discount ({memberDiscountPercent}%)</span>
                       <span>-${discount.toFixed(2)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm">
-                    <span>Tax (8%)</span>
+                    <span>Tax ({(taxRate * 100).toFixed(0)}%)</span>
                     <span>${tax.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between font-bold pt-2 border-t">

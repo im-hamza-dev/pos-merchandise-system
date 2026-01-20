@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { CartItem, Customer, Product, Transaction } from '@/lib/types';
 import { checkoutService } from '@/lib/api/services/checkout.service';
+import { useSettingsStore } from '@/lib/stores/settings.store';
 
 interface CheckoutStore {
   cart: CartItem[];
@@ -79,9 +80,13 @@ export const useCheckoutStore = create<CheckoutStore>((set, get) => ({
       throw new Error('Cart is empty');
     }
     
+    const settings = useSettingsStore.getState().settings;
+    const taxRate = settings?.taxRate ?? 0.08;
+    const memberDiscountPercent = settings?.memberDiscountPercent ?? 10;
+    
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const discount = selectedCustomer?.isMember ? subtotal * 0.1 : 0;
-    const tax = (subtotal - discount) * 0.08;
+    const discount = selectedCustomer?.isMember ? subtotal * (memberDiscountPercent / 100) : 0;
+    const tax = (subtotal - discount) * taxRate;
     const total = subtotal - discount + tax;
 
     const transaction = await checkoutService.createTransaction({
