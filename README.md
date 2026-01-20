@@ -282,6 +282,4 @@ pos-merchandise-system/
 6. **Local Storage Persistence:** Role selection persists across sessions
 
  
----
 
-**Built with ❤️ using Next.js, TypeScript, and shadcn/ui**
