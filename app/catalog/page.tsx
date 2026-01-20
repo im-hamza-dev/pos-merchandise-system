@@ -19,9 +19,12 @@ import { ProductPromotion } from '@/components/catalog/ProductPromotion';
 import { ProductActivity } from '@/components/catalog/ProductActivity';
 import { CategoriesManager } from '@/components/catalog/CategoriesManager';
 import { toast } from 'sonner';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { usePermissions } from '@/lib/hooks/usePermissions';
 
 export default function CatalogPage() {
   const { products, categories, selectedProduct, loading, loadProducts, loadCategories, setSelectedProduct, createProduct } = useCatalogStore();
+  const { hasPermission } = usePermissions();
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [newProductOpen, setNewProductOpen] = useState(false);
@@ -111,18 +114,22 @@ export default function CatalogPage() {
     }
   };
 
+  const canEditCatalog = hasPermission('canEditCatalog');
+
   return (
-    <div className="space-y-6">
+    <ProtectedRoute require="canAccessCatalog">
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Catalog</h1>
           <p className="text-muted-foreground">Manage products, inventory, and categories</p>
         </div>
-        <Dialog open={newProductOpen} onOpenChange={setNewProductOpen}>
-          <DialogTrigger asChild>
-            <Button>New Product</Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        {canEditCatalog && (
+          <Dialog open={newProductOpen} onOpenChange={setNewProductOpen}>
+            <DialogTrigger asChild>
+              <Button>New Product</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create New Product</DialogTitle>
             </DialogHeader>
@@ -253,7 +260,8 @@ export default function CatalogPage() {
               </Button>
             </div>
           </DialogContent>
-        </Dialog>
+          </Dialog>
+        )}
       </div>
 
       <Tabs defaultValue="products" className="space-y-4">
@@ -380,13 +388,13 @@ export default function CatalogPage() {
                     <TabsTrigger value="activity">Activity</TabsTrigger>
                   </TabsList>
                   <TabsContent value="details">
-                    <ProductDetails product={selectedProduct} />
+                    <ProductDetails product={selectedProduct} canEdit={canEditCatalog} />
                   </TabsContent>
                   <TabsContent value="inventory">
-                    <ProductInventory product={selectedProduct} />
+                    <ProductInventory product={selectedProduct} canEdit={canEditCatalog} />
                   </TabsContent>
                   <TabsContent value="promotion">
-                    <ProductPromotion product={selectedProduct} />
+                    <ProductPromotion product={selectedProduct} canEdit={canEditCatalog} />
                   </TabsContent>
                   <TabsContent value="activity">
                     <ProductActivity product={selectedProduct} />
@@ -398,9 +406,10 @@ export default function CatalogPage() {
         </TabsContent>
 
         <TabsContent value="categories">
-          <CategoriesManager />
+          <CategoriesManager canEdit={canEditCatalog} />
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }

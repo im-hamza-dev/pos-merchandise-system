@@ -116,3 +116,24 @@ export interface Pickup {
   createdAt: Date;
   completedAt?: Date;
 }
+
+export type UserRole = 'staff' | 'manager' | 'owner';
+
+export interface Permissions {
+  canAccessCheckout: boolean;
+  canAccessOverview: boolean;
+  canAccessCatalog: boolean;
+  canEditCatalog: boolean;
+  canAccessBanners: boolean;
+  canAccessSales: boolean;
+  canIssueRefund: boolean;
+  canCancelPickup: boolean;
+  canAccessSettings: boolean;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+}

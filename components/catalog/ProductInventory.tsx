@@ -14,9 +14,10 @@ import { toast } from 'sonner';
 
 interface ProductInventoryProps {
   product: Product;
+  canEdit?: boolean;
 }
 
-export function ProductInventory({ product }: ProductInventoryProps) {
+export function ProductInventory({ product, canEdit = true }: ProductInventoryProps) {
   const { updateProduct, adjustInventory, loadProducts } = useCatalogStore();
   const [reorderThreshold, setReorderThreshold] = useState(product.reorderThreshold || 0);
   const [adjustmentOpen, setAdjustmentOpen] = useState(false);
@@ -31,11 +32,13 @@ export function ProductInventory({ product }: ProductInventoryProps) {
     : { label: 'Normal', color: 'outline' };
 
   const handleSaveThreshold = async () => {
+    if (!canEdit) return;
     await updateProduct(product.id, { reorderThreshold });
     toast.success('Reorder threshold updated');
   };
 
   const handleAdjustment = async () => {
+    if (!canEdit) return;
     if (!adjustmentReason.trim()) {
       toast.error('Please provide a reason for the adjustment');
       return;
@@ -83,11 +86,12 @@ export function ProductInventory({ product }: ProductInventoryProps) {
           <div className="flex gap-2">
             <Input
               type="number"
+              disabled={!canEdit}
               value={reorderThreshold}
               onChange={(e) => setReorderThreshold(parseInt(e.target.value) || 0)}
               placeholder="Set minimum stock level"
             />
-            <Button onClick={handleSaveThreshold}>
+            <Button onClick={handleSaveThreshold} disabled={!canEdit}>
               Save
             </Button>
           </div>
@@ -102,7 +106,7 @@ export function ProductInventory({ product }: ProductInventoryProps) {
           <h3 className="font-medium">Manual Adjustments</h3>
           <Dialog open={adjustmentOpen} onOpenChange={setAdjustmentOpen}>
             <DialogTrigger asChild>
-              <Button>Adjust Stock</Button>
+              <Button disabled={!canEdit}>Adjust Stock</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -113,6 +117,7 @@ export function ProductInventory({ product }: ProductInventoryProps) {
                   <Label>Adjustment Type</Label>
                   <Select
                     value={adjustmentType}
+                    disabled={!canEdit}
                     onValueChange={(value: any) => setAdjustmentType(value)}
                   >
                     <SelectTrigger>
@@ -130,6 +135,7 @@ export function ProductInventory({ product }: ProductInventoryProps) {
                   <Input
                     type="number"
                     min="0"
+                    disabled={!canEdit}
                     value={adjustmentAmount}
                     onChange={(e) => setAdjustmentAmount(parseInt(e.target.value) || 0)}
                     placeholder="Enter quantity"
@@ -138,7 +144,7 @@ export function ProductInventory({ product }: ProductInventoryProps) {
 
                 <div className="space-y-2">
                   <Label>Reason *</Label>
-                  <Select value={adjustmentReason} onValueChange={setAdjustmentReason}>
+                  <Select value={adjustmentReason} onValueChange={setAdjustmentReason} disabled={!canEdit}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select reason" />
                     </SelectTrigger>
@@ -165,7 +171,7 @@ export function ProductInventory({ product }: ProductInventoryProps) {
                   </p>
                 </div>
 
-                <Button className="w-full" onClick={handleAdjustment}>
+                <Button className="w-full" onClick={handleAdjustment} disabled={!canEdit}>
                   Confirm Adjustment
                 </Button>
               </div>

@@ -6,6 +6,7 @@ import { useCatalogStore } from '@/lib/stores/catalog.store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { format, subDays } from 'date-fns';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function OverviewPage() {
   const { transactions, loadTransactions } = useSalesStore();
@@ -66,7 +67,8 @@ export default function OverviewPage() {
   const COLORS = ['#3b82f6', '#10b981'];
 
   return (
-    <div className="space-y-6">
+    <ProtectedRoute require="canAccessOverview">
+      <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Overview</h1>
         <p className="text-muted-foreground">Dashboard and key metrics</p>
@@ -122,7 +124,7 @@ export default function OverviewPage() {
                 <span className="text-2xl">×</span>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Out of Stock</p>
+                <p className="text-sm text-muted-foreground">Out of Stock</p>
                 <p className="text-2xl font-bold">{outOfStockProducts.length}</p>
               </div>
             </div>
@@ -194,6 +196,7 @@ export default function OverviewPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }

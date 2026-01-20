@@ -14,9 +14,10 @@ import { toast } from 'sonner';
 
 interface ProductDetailsProps {
   product: Product;
+  canEdit?: boolean;
 }
 
-export function ProductDetails({ product }: ProductDetailsProps) {
+export function ProductDetails({ product, canEdit = true }: ProductDetailsProps) {
   const { categories, updateProduct } = useCatalogStore();
   const [formData, setFormData] = useState(product);
 
@@ -33,6 +34,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <Label>Product Name *</Label>
             <Input
               value={formData.name}
+              disabled={!canEdit}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
@@ -41,6 +43,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <Label>Category *</Label>
             <Select
               value={formData.categoryId}
+              disabled={!canEdit}
               onValueChange={(value) => setFormData({ ...formData, categoryId: value })}
             >
               <SelectTrigger>
@@ -62,6 +65,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               type="number"
               step="0.01"
               value={formData.price}
+              disabled={!canEdit}
               onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
             />
           </div>
@@ -70,6 +74,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <Label>Description</Label>
             <Textarea
               value={formData.description || ''}
+              disabled={!canEdit}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={4}
             />
@@ -91,6 +96,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               <Label>Inventory Tracking</Label>
               <Switch
                 checked={formData.inventoryTracking}
+                disabled={!canEdit}
                 onCheckedChange={(checked) =>
                   setFormData({ ...formData, inventoryTracking: checked })
                 }
@@ -101,6 +107,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               <Label>Discount Eligible</Label>
               <Switch
                 checked={formData.discountEligible}
+                disabled={!canEdit}
                 onCheckedChange={(checked) =>
                   setFormData({ ...formData, discountEligible: checked })
                 }
@@ -111,6 +118,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               <Label>Status</Label>
               <Select
                 value={formData.status}
+                disabled={!canEdit}
                 onValueChange={(value: any) => setFormData({ ...formData, status: value })}
               >
                 <SelectTrigger>
@@ -146,7 +154,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       )}
 
       <div className="flex justify-end">
-        <Button onClick={handleSave}>
+        <Button onClick={handleSave} disabled={!canEdit}>
           Save Changes
         </Button>
       </div>

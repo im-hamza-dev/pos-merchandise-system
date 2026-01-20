@@ -12,15 +12,17 @@ import { toast } from 'sonner';
 
 interface ProductPromotionProps {
   product: Product;
+  canEdit?: boolean;
 }
 
-export function ProductPromotion({ product }: ProductPromotionProps) {
+export function ProductPromotion({ product, canEdit = true }: ProductPromotionProps) {
   const { updateProduct } = useCatalogStore();
   const [promoted, setPromoted] = useState(product.promoted);
   const [priority, setPriority] = useState(product.promotionPriority || 0);
   const [promoLabel, setPromoLabel] = useState(product.promoLabel || '');
 
   const handleSave = async () => {
+    if (!canEdit) return;
     await updateProduct(product.id, {
       promoted,
       promotionPriority: promoted ? priority : undefined,
@@ -43,6 +45,7 @@ export function ProductPromotion({ product }: ProductPromotionProps) {
           </div>
           <Switch
             checked={promoted}
+            disabled={!canEdit}
             onCheckedChange={setPromoted}
           />
         </div>
@@ -54,6 +57,7 @@ export function ProductPromotion({ product }: ProductPromotionProps) {
               <Input
                 type="number"
                 min="0"
+                disabled={!canEdit}
                 value={priority}
                 onChange={(e) => setPriority(parseInt(e.target.value) || 0)}
                 placeholder="Higher numbers = higher priority"
@@ -67,6 +71,7 @@ export function ProductPromotion({ product }: ProductPromotionProps) {
               <Label>Promo Label (Optional)</Label>
               <Input
                 value={promoLabel}
+                disabled={!canEdit}
                 onChange={(e) => setPromoLabel(e.target.value)}
                 placeholder="e.g., New, Staff Pick, Popular"
                 maxLength={20}
@@ -90,7 +95,7 @@ export function ProductPromotion({ product }: ProductPromotionProps) {
       </div>
 
       <div className="flex justify-end">
-        <Button onClick={handleSave}>
+        <Button onClick={handleSave} disabled={!canEdit}>
           Save Changes
         </Button>
       </div>

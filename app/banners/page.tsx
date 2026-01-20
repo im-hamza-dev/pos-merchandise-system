@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function BannersPage() {
   const { banners, loading, loadBanners, createBanner, updateBanner, deleteBanner } = useBannersStore();
@@ -95,7 +96,8 @@ export default function BannersPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <ProtectedRoute require="canAccessBanners">
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Banners</h1>
@@ -343,6 +345,7 @@ export default function BannersPage() {
           </Card>
         ))}
       </div>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }

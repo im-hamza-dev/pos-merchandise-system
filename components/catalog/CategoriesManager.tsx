@@ -12,7 +12,11 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
-export function CategoriesManager() {
+interface CategoriesManagerProps {
+  canEdit?: boolean;
+}
+
+export function CategoriesManager({ canEdit = true }: CategoriesManagerProps) {
   const { categories, products, updateCategory, createCategory, loadCategories } = useCatalogStore();
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [newCategoryOpen, setNewCategoryOpen] = useState(false);
@@ -23,6 +27,7 @@ export function CategoriesManager() {
   });
 
   const handleSaveCategory = async () => {
+    if (!canEdit) return;
     if (!formData.name?.trim()) {
       toast.error('Category name is required');
       return;
@@ -61,36 +66,38 @@ export function CategoriesManager() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Categories ({categories.length})</CardTitle>
-            <Dialog open={newCategoryOpen} onOpenChange={setNewCategoryOpen}>
-              <DialogTrigger asChild>
-                <Button>New Category</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create New Category</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Category Name *</Label>
-                    <Input
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Enter category name"
-                    />
+            {canEdit && (
+              <Dialog open={newCategoryOpen} onOpenChange={setNewCategoryOpen}>
+                <DialogTrigger asChild>
+                  <Button>New Category</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create New Category</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Category Name *</Label>
+                      <Input
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="Enter category name"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label>Visible</Label>
+                      <Switch
+                        checked={formData.visible}
+                        onCheckedChange={(checked) => setFormData({ ...formData, visible: checked })}
+                      />
+                    </div>
+                    <Button className="w-full" onClick={handleSaveCategory}>
+                      Create Category
+                    </Button>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <Label>Visible</Label>
-                    <Switch
-                      checked={formData.visible}
-                      onCheckedChange={(checked) => setFormData({ ...formData, visible: checked })}
-                    />
-                  </div>
-                  <Button className="w-full" onClick={handleSaveCategory}>
-                    Create Category
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -111,55 +118,57 @@ export function CategoriesManager() {
                       {getProductCount(category.id)} products
                     </p>
                   </div>
-                  <Dialog
-                    open={editingCategory?.id === category.id}
-                    onOpenChange={(open) => !open && setEditingCategory(null)}
-                  >
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => openEdit(category)}>
-                        Edit
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Edit Category</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label>Category Name *</Label>
-                          <Input
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          />
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <Label>Visible</Label>
-                            <p className="text-sm text-muted-foreground">
-                              Hidden categories and their products won't appear in checkout
-                            </p>
-                          </div>
-                          <Switch
-                            checked={formData.visible}
-                            onCheckedChange={(checked) => setFormData({ ...formData, visible: checked })}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Display Order</Label>
-                          <Input
-                            type="number"
-                            value={formData.displayOrder}
-                            onChange={(e) =>
-                              setFormData({ ...formData, displayOrder: parseInt(e.target.value) })
-                            }
-                          />
-                        </div>
-                        <Button className="w-full" onClick={handleSaveCategory}>
-                          Save Changes
+                  {canEdit && (
+                    <Dialog
+                      open={editingCategory?.id === category.id}
+                      onOpenChange={(open) => !open && setEditingCategory(null)}
+                    >
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" onClick={() => openEdit(category)}>
+                          Edit
                         </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Edit Category</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label>Category Name *</Label>
+                            <Input
+                              value={formData.name}
+                              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <Label>Visible</Label>
+                              <p className="text-sm text-muted-foreground">
+                                Hidden categories and their products won't appear in checkout
+                              </p>
+                            </div>
+                            <Switch
+                              checked={formData.visible}
+                              onCheckedChange={(checked) => setFormData({ ...formData, visible: checked })}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Display Order</Label>
+                            <Input
+                              type="number"
+                              value={formData.displayOrder}
+                              onChange={(e) =>
+                                setFormData({ ...formData, displayOrder: parseInt(e.target.value) })
+                              }
+                            />
+                          </div>
+                          <Button className="w-full" onClick={handleSaveCategory}>
+                            Save Changes
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  )}
                 </div>
               ))}
           </div>

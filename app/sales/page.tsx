@@ -12,9 +12,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { usePermissions } from '@/lib/hooks/usePermissions';
 
 export default function SalesPage() {
   const { transactions, pickups, loading, loadTransactions, loadPickups } = useSalesStore();
+  const { hasPermission } = usePermissions();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [filters, setFilters] = useState({
     buyerType: 'all',
@@ -32,8 +35,11 @@ export default function SalesPage() {
     return true;
   });
 
+  const canManagePickups = hasPermission('canCancelPickup');
+
   return (
-    <div className="space-y-6">
+    <ProtectedRoute require="canAccessSales">
+      <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Sales</h1>
         <p className="text-muted-foreground">View transactions and manage pickups</p>
@@ -153,7 +159,9 @@ export default function SalesPage() {
                         </TableCell>
                         <TableCell>
                           {pickup.status === 'pending' && (
-                            <Button variant="outline" size="sm">Mark Complete</Button>
+                            <Button variant="outline" size="sm" disabled={!canManagePickups}>
+                              Mark Complete
+                            </Button>
                           )}
                         </TableCell>
                       </TableRow>
@@ -241,6 +249,7 @@ export default function SalesPage() {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }

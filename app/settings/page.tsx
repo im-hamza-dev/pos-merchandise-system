@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function SettingsPage() {
   const { settings, loading, loadSettings, updateSettings, generateReport } = useSettingsStore();
@@ -83,7 +84,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <ProtectedRoute require="canAccessSettings">
+      <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Settings & Reports</h1>
         <p className="text-muted-foreground">Analytics and system configuration</p>
@@ -191,6 +193,7 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }
