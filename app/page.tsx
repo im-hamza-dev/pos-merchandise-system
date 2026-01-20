@@ -4,7 +4,8 @@ import { useMemo, useEffect } from 'react';
 import { useSalesStore } from '@/lib/stores/sales.store';
 import { useCatalogStore } from '@/lib/stores/catalog.store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 import { format, subDays } from 'date-fns';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
@@ -65,6 +66,31 @@ export default function OverviewPage() {
   }, [transactions]);
 
   const COLORS = ['#3b82f6', '#10b981'];
+
+  const lineChartConfig = {
+    revenue: {
+      label: 'Revenue',
+      color: '#3b82f6',
+    },
+  };
+
+  const barChartConfig = {
+    value: {
+      label: 'Sales',
+      color: '#10b981',
+    },
+  };
+
+  const pieChartConfig = {
+    Members: {
+      label: 'Members',
+      color: '#3b82f6',
+    },
+    Guests: {
+      label: 'Guests',
+      color: '#10b981',
+    },
+  };
 
   return (
     <ProtectedRoute require="canAccessOverview">
@@ -138,16 +164,16 @@ export default function OverviewPage() {
             <CardTitle>Sales by Date (Last 7 Days)</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ChartContainer config={lineChartConfig} className="h-[300px]">
               <LineChart data={salesByDate}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
-                <Tooltip />
-                <Legend />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartLegend content={<ChartLegendContent />} />
                 <Line type="monotone" dataKey="revenue" stroke="#3b82f6" />
               </LineChart>
-            </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
 
@@ -156,16 +182,16 @@ export default function OverviewPage() {
             <CardTitle>Sales by Category</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ChartContainer config={barChartConfig} className="h-[300px]">
               <BarChart data={salesByCategory}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip />
-                <Legend />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartLegend content={<ChartLegendContent />} />
                 <Bar dataKey="value" fill="#10b981" />
               </BarChart>
-            </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
 
@@ -174,7 +200,7 @@ export default function OverviewPage() {
             <CardTitle>Member vs Guest Spend</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ChartContainer config={pieChartConfig} className="h-[300px]">
               <PieChart>
                 <Pie
                   data={customerTypeData}
@@ -190,9 +216,9 @@ export default function OverviewPage() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <ChartTooltip content={<ChartTooltipContent />} />
               </PieChart>
-            </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
       </div>
