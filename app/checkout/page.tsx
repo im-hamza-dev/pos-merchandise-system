@@ -130,33 +130,68 @@ export default function CheckoutPage() {
           <CardContent className="p-0">
             <Carousel className="w-full">
               <CarouselContent>
-                {activeBanners.map((banner) => (
-                  <CarouselItem key={banner.id}>
-                    <div className="relative w-full h-48 md:h-64 rounded-lg overflow-hidden">
-                      <img
-                        src={banner.image}
-                        alt={banner.headline}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-linear-to-r from-black/60 to-transparent flex items-center">
-                        <div className="p-6 text-white">
-                          <h3 className="text-2xl md:text-3xl font-bold mb-2">{banner.headline}</h3>
-                          {banner.subtext && (
-                            <p className="text-lg md:text-xl mb-4">{banner.subtext}</p>
-                          )}
-                          {banner.ctaLink && (
-                            <Button
-                              variant="secondary"
-                              onClick={() => window.open(banner.ctaLink, '_blank')}
-                            >
-                              Learn More
-                            </Button>
-                          )}
+                {activeBanners.map((banner) => {
+                  const linkedProducts = banner.type === 'product' && banner.productIds
+                    ? products.filter(p => banner.productIds?.includes(p.id))
+                    : [];
+                  
+                  return (
+                    <CarouselItem key={banner.id}>
+                      <div className="space-y-4">
+                        <div className="relative w-full h-48 md:h-64 rounded-lg overflow-hidden">
+                          <img
+                            src={banner.image}
+                            alt={banner.headline}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-linear-to-r from-black/60 to-transparent flex items-center">
+                            <div className="p-6 text-white">
+                              <h3 className="text-2xl md:text-3xl font-bold mb-2">{banner.headline}</h3>
+                              {banner.subtext && (
+                                <p className="text-lg md:text-xl mb-4">{banner.subtext}</p>
+                              )}
+                              {banner.ctaLink && (
+                                <Button
+                                  variant="secondary"
+                                  onClick={() => window.open(banner.ctaLink, '_blank')}
+                                >
+                                  Learn More
+                                </Button>
+                              )}
+                            </div>
+                          </div>
                         </div>
+                        
+                        {linkedProducts.length > 0 && (
+                          <div className="space-y-2">
+                            <h4 className="text-sm font-semibold text-muted-foreground">Featured Products</h4>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                              {linkedProducts.map(product => (
+                                <Card 
+                                  key={product.id} 
+                                  className="cursor-pointer hover:border-primary transition-colors"
+                                  onClick={() => handleAddToCart(product)}
+                                >
+                                  <div className="p-2 space-y-1">
+                                    <img
+                                      src={product.images[0]}
+                                      alt={product.name}
+                                      className="w-full h-20 object-cover rounded"
+                                    />
+                                    <div>
+                                      <p className="text-xs font-medium truncate">{product.name}</p>
+                                      <p className="text-xs text-muted-foreground">${product.price.toFixed(2)}</p>
+                                    </div>
+                                  </div>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </CarouselItem>
-                ))}
+                    </CarouselItem>
+                  );
+                })}
               </CarouselContent>
               {activeBanners.length > 1 && (
                 <>

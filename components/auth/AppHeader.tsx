@@ -1,13 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/lib/stores/auth.store';
 import { usePermissions } from '@/lib/hooks/usePermissions';
+import { cn } from '@/lib/utils/cn';
 
 export function AppHeader() {
   const router = useRouter();
+  const pathname = usePathname();
   const { role, permissions } = usePermissions();
   const signOut = useAuthStore((s) => s.signOut);
 
@@ -43,32 +45,50 @@ export function AppHeader() {
 
         <nav className="flex gap-2">
           {permissions?.canAccessOverview && (
-            <Button variant="ghost" asChild>
+            <Button 
+              variant={pathname === '/' ? 'secondary' : 'ghost'} 
+              asChild
+            >
               <Link href="/">Overview</Link>
             </Button>
           )}
           {permissions?.canAccessCheckout && (
-            <Button variant="ghost" asChild>
+            <Button 
+              variant={pathname === '/checkout' ? 'secondary' : 'ghost'} 
+              asChild
+            >
               <Link href="/checkout">Checkout</Link>
             </Button>
           )}
           {permissions?.canAccessCatalog && (
-            <Button variant="ghost" asChild>
+            <Button 
+              variant={pathname === '/catalog' ? 'secondary' : 'ghost'} 
+              asChild
+            >
               <Link href="/catalog">Catalog</Link>
             </Button>
           )}
           {permissions?.canAccessBanners && (
-            <Button variant="ghost" asChild>
+            <Button 
+              variant={pathname === '/banners' ? 'secondary' : 'ghost'} 
+              asChild
+            >
               <Link href="/banners">Banners</Link>
             </Button>
           )}
           {permissions?.canAccessSales && (
-            <Button variant="ghost" asChild>
+            <Button 
+              variant={pathname === '/sales' ? 'secondary' : 'ghost'} 
+              asChild
+            >
               <Link href="/sales">Sales</Link>
             </Button>
           )}
           {permissions?.canAccessSettings && (
-            <Button variant="ghost" asChild>
+            <Button 
+              variant={pathname === '/settings' ? 'secondary' : 'ghost'} 
+              asChild
+            >
               <Link href="/settings">Settings</Link>
             </Button>
           )}
